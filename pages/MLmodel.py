@@ -1,0 +1,176 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split, GridSearchCV
+from imblearn.over_sampling import SVMSMOTE, RandomOverSampler, BorderlineSMOTE, ADASYN, SMOTEN, KMeansSMOTE
+from imblearn.combine import SMOTEENN, SMOTETomek
+from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
+
+# App Title
+st.title("SVM with Balancing Methods and Hyperparameters")
+
+# Sidebar: Upload dataset
+st.sidebar.header("Input Dataset")
+uploaded_file = st.sidebar.file_uploader("Upload your dataset (.csv or .xlsx)", type=["csv", "xlsx"])
+
+if uploaded_file:
+    if uploaded_file.name.endswith(".csv"):
+        data = pd.read_csv(uploaded_file)
+    elif uploaded_file.name.endswith(".xlsx"):
+        data = pd.read_excel(uploaded_file)
+
+    st.write("Uploaded Dataset", data)
+
+    # Sidebar: Configurable index column
+    index_col = st.sidebar.selectbox("Select Index Column", options=data.columns)
+    data = data.set_index(index_col)
+
+    # Sidebar: Configurable label column
+    label_col = st.sidebar.selectbox("Select Label Column", options=data.columns)
+    data['label'] = data[label_col]
+
+    # Split features and labels
+    features_df = data.drop(columns=['label'])
+    X = features_df.values
+    y = data['label'].values
+
+    # Display class distribution
+    st.write("Class Distribution", data['label'].value_counts())
+
+    # Sidebar: Data splitting
+    test_size = st.sidebar.slider("Test Set Size (%)", min_value=10, max_value=50, value=40, step=5) / 100
+    stratify_option = st.sidebar.checkbox("Stratify Split", value=True)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=42, stratify=y if stratify_option else None
+    )
+
+    st.write("Training Set Size:", len(X_train))
+    st.write("Test Set Size:", len(X_test))
+
+    # Sidebar: Balancing method selection
+    selected_balancing_methods = st.sidebar.multiselect(
+        "Select Balancing Methods",
+        options=[
+            'RandomOverSampler', 'SVMSMOTE', 'SMOTEENN', 'SMOTETomek',
+            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE', 'SMOTEN'
+        ],
+        default=['RandomOverSampler']
+    )
+
+    # Allow user to configure `sampling_strategy` and `random_state` for each method
+    balancing_configs = {}
+    for method_name in selected_balancing_methods:
+        st.sidebar.subheader(f"Settings for {method_name}")
+        sampling_strategy = st.sidebar.slider(
+            f"Sampling Strategy for {method_name} (as a proportion of the minority class)", 
+            min_value=0.1, max_value=10.0, value=0.3, step=0.1
+        )
+        random_state = st.sidebar.number_input(
+            f"Random State for {method_name}", min_value=0, value=42
+        )
+        balancing_configs[method_name] = {
+            'sampling_strategy': sampling_strategy,
+            'random_state': random_state
+        }
+
+    # Sidebar: Hyperparameter tuning
+    use_hyperparameter_tuning = st.sidebar.radio("Use Hyperparameter Tuning?", options=['Yes', 'No'], index=1)
+    param_grid = {
+        'kernel': ['poly', 'rbf', 'linear'],
+        'C': [0.001, 0.01, 0.1, 1, 10, 100],
+        'gamma': [0.0001, 0.001, 0.01, 0.1, 1],
+        'coef0': [0, 1],
+        'class_weight': [None, 'balanced'],
+        'probability': [True]
+    }
+
+    results_df = pd.DataFrame(columns=[
+        'Balancing Method', 'Train Accuracy', 'Test Accuracy', 'Test F1 Score', 
+        'Test Precision', 'Test Recall', 'Train Classification Report', 'Test Classification Report'
+    ])
+
+    # Iterate through selected balancing methods
+    for method_name, config in balancing_configs.items():
+        st.write(f"Processing with {method_name}...")
+        
+        # Dynamically create balancing method instances
+        if method_name == 'RandomOverSampler':
+            balancing_method = RandomOverSampler(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'SVMSMOTE':
+            balancing_method = SVMSMOTE(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'SMOTEENN':
+            balancing_method = SMOTEENN(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'SMOTETomek':
+            balancing_method = SMOTETomek(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'ADASYN':
+            balancing_method = ADASYN(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'BorderlineSMOTE':
+            balancing_method = BorderlineSMOTE(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'KMeansSMOTE':
+            balancing_method = KMeansSMOTE(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+        elif method_name == 'SMOTEN':
+            balancing_method = SMOTEN(random_state=config['random_state'], sampling_strategy=config['sampling_strategy'])
+
+        X_train_resampled, y_train_resampled = balancing_method.fit_resample(X_train, y_train)
+
+        # Encode labels
+        label_encoder = LabelEncoder()
+        y_train_encoded = label_encoder.fit_transform(y_train_resampled)
+        y_test_encoded = label_encoder.transform(y_test)
+
+        # Train model
+        if use_hyperparameter_tuning == "Yes":
+            st.write("Performing Hyperparameter Tuning...")
+            grid_search = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy', n_jobs=-1, verbose=0)
+            grid_search.fit(X_train_resampled, y_train_encoded)
+            model = grid_search.best_estimator_
+            st.write("Best Hyperparameters:", grid_search.best_params_)
+        else:
+            model = SVC(kernel='linear', probability=True)
+            model.fit(X_train_resampled, y_train_encoded)
+
+        # Evaluate model
+        y_pred_train = model.predict(X_train_resampled)
+        y_pred_test = model.predict(X_test)
+
+        train_accuracy = accuracy_score(y_train_encoded, y_pred_train)
+        test_accuracy = accuracy_score(y_test_encoded, y_pred_test)
+        test_f1 = f1_score(y_test_encoded, y_pred_test, average='weighted')
+        test_precision = precision_score(y_test_encoded, y_pred_test, average='weighted')
+        test_recall = recall_score(y_test_encoded, y_pred_test, average='weighted')
+
+        train_class_report = classification_report(y_train_encoded, y_pred_train, target_names=label_encoder.classes_)
+        test_class_report = classification_report(y_test_encoded, y_pred_test, target_names=label_encoder.classes_)
+
+        # Append results
+        new_row = pd.DataFrame({
+            'Balancing Method': [method_name],
+            'Train Accuracy': [train_accuracy],
+            'Test Accuracy': [test_accuracy],
+            'Test F1 Score': [test_f1],
+            'Test Precision': [test_precision],
+            'Test Recall': [test_recall],
+            'Train Classification Report': [train_class_report],
+            'Test Classification Report': [test_class_report]
+        })
+        results_df = pd.concat([results_df, new_row], ignore_index=True)
+
+    # Display results
+    st.write("Results", results_df)
+
+    # Download option
+    @st.cache_data
+    def convert_to_csv(df):
+        return df.to_csv(index=False).encode('utf-8')
+
+    st.download_button(
+        label="Download Results as CSV",
+        data=convert_to_csv(results_df),
+        file_name="results.csv",
+        mime="text/csv"
+    )
+else:
+    st.warning("Please upload a dataset to proceed.")
