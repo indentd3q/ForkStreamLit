@@ -1,9 +1,6 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
 
-st.set_page_config(page_title="Home")
+st.set_page_config(page_title="Home", layout="wide", initial_sidebar_state="expanded")
 
 st.title("Optimized Feature Selection for Cancer Detection")
 st.write(
