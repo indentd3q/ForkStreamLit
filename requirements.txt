@@ -3,6 +3,6 @@ pandas
 plotly
 numpy
 pydeseq2
-sklearn
+scikit-learn
 imblearn
 matplotlib
