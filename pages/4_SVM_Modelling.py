@@ -25,14 +25,12 @@ if uploaded_file:
     # Sidebar: Configurable index column
     index_col = st.sidebar.selectbox("Select Index Column", options=data.columns)
     data = data.set_index(index_col)
+    data = data.round().astype(int)
+    data = data.T
+    X = data
 
     # Sidebar: Configurable label column
-    label_col = st.sidebar.selectbox("Select Label Column", options=data.columns)
-    data['label'] = data[label_col]
-
-    # Split features and labels
-    features_df = data.drop(columns=['label'])
-    X = features_df.values
+    data['label'] = ['cancer' if '-01' in sample else 'normal' for sample in data.index]
     y = data['label'].values
 
     # Display class distribution
