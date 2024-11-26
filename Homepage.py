@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="Home", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Homepage", page_icon=":penguin:" layout="wide", initial_sidebar_state="expanded")
 
 st.title("Optimized Feature Selection for Cancer Detection")
 st.write(
