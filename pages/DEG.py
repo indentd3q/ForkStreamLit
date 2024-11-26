@@ -2,7 +2,25 @@ import streamlit as st
 import pandas as pd
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
-from functions import seperateByRace, matchingDNA
+
+# Seperates Phenotypes by Race
+def seperateByRace(file, race):
+    """ 
+        Searches the phenotype dataframe for the race.demographic column 
+        and returns a new dataframe with only the rows that contains the race.
+    """
+    return file[file["race.demographic"].str.contains(race, case=False, na=False)]
+
+# Matches Sample ID from phenotypes to counts
+def matchingDNA(race, phenotypeDATA, countsDATA):
+    """
+        Matches the race phenotype data to the counts data 
+        and returns a racial-dataframe with the matching data.
+    """
+    colA1 = phenotypeDATA.iloc[:, 0]
+
+    newFile = countsDATA[['Ensembl_ID'] + [col for col in colA1 if col in countsDATA.columns[1:]]]    
+    return pd.DataFrame(newFile)
 
 # App Title
 st.title("Differential Gene Expression Analysis with PyDESeq2")
