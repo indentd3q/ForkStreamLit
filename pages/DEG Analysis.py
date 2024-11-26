@@ -12,7 +12,7 @@ def seperateByRace(file, race):
     return file[file["race.demographic"].str.contains(race, case=False, na=False)]
 
 # Matches Sample ID from phenotypes to counts
-def matchingDNA(race, phenotypeDATA, countsDATA):
+def matchingDNA(phenotypeDATA, countsDATA):
     """
         Matches the race phenotype data to the counts data 
         and returns a racial-dataframe with the matching data.
@@ -56,7 +56,7 @@ if phenotypeFile and countsFile:
         race: seperateByRace(phenotype, race) for race in phenotype_unique_races
     }
     counts_race_dataframes = {
-        race: matchingDNA(race, phenotype, counts) for race in phenotype_unique_races
+        race: matchingDNA(phenotype, counts) for race in phenotype_unique_races
     }
 
     # Preprocess DEG
