@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -22,16 +23,19 @@ if uploaded_file:
 
     st.write("Uploaded Dataset", data)
 
+    features_df = data.iloc[:, 1:]
+    features_df = features_df.round().astype(int).T
+    X = np.asarray(features_df)
+
     # Select index column
     index_col = st.selectbox("Select Index Column", options=data.columns)
     data = data.set_index(index_col)
     data = data.round().astype(int)
     data = data.T
-    X = data.iloc[:-1,:]
 
     # Generate label column
     data['label'] = ['cancer' if '-01' in sample else 'normal' for sample in data.index]
-    y = data['label'].values
+    y = np.asarray(data['label'])
 
     # Display class distribution
     st.write("Class Distribution", data['label'].value_counts())
@@ -43,7 +47,7 @@ if uploaded_file:
     st.dataframe(y)
 
     # Data splitting options
-    test_size = st.slider("Test Set Size (%)", min_value=10, max_value=50, value=40, step=5) / 100
+    test_size = st.slider("Test Set Size (%)", min_value=10, max_value=50, value=40, step=1) / 100
     stratify_option = st.checkbox("Stratify Split", value=True)
 
     X_train, X_test, y_train, y_test = train_test_split(
