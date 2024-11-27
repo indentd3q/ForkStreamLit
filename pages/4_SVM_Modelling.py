@@ -27,7 +27,7 @@ if uploaded_file:
     data = data.set_index(index_col)
     data = data.round().astype(int)
     data = data.T
-    X = data[:-1,:]
+    X = data.iloc[:-1,:]
 
     # Generate label column
     data['label'] = ['cancer' if '-01' in sample else 'normal' for sample in data.index]
