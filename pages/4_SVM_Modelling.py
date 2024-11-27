@@ -62,7 +62,7 @@ if uploaded_file:
         "Select Balancing Methods",
         options=[
             'RandomOverSampler', 'SVMSMOTE', 'SMOTEENN', 'SMOTETomek',
-            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE', 'SMOTEN'
+            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE'
         ],
         default=['RandomOverSampler']
     )
@@ -125,6 +125,7 @@ if uploaded_file:
             grid_search = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy', n_jobs=-1, verbose=0)
             grid_search.fit(X_train_resampled, y_train_encoded)
             model = grid_search.best_estimator_
+            st.write("Best Hyperparameters:", grid_search.best_params_)
         else:
             model = SVC(kernel='linear', probability=True)
             model.fit(X_train_resampled, y_train_encoded)
