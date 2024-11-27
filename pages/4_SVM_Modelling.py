@@ -35,6 +35,12 @@ if uploaded_file:
 
     # Display class distribution
     st.write("Class Distribution", data['label'].value_counts())
+    
+    st.write("X dataframe")
+    st.dataframe(X)
+
+    st.write("y dataframe")
+    st.dataframe(y)
 
     # Data splitting options
     test_size = st.slider("Test Set Size (%)", min_value=10, max_value=50, value=40, step=5) / 100
