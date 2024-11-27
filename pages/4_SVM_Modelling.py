@@ -125,7 +125,6 @@ if uploaded_file:
             grid_search = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy', n_jobs=-1, verbose=2)
             grid_search.fit(X_train_resampled, y_train_encoded)
             model = grid_search.best_estimator_
-            st.write("Best Hyperparameters:", grid_search.best_params_)
         else:
             model = SVC(kernel='linear', probability=True)
             model.fit(X_train_resampled, y_train_encoded)
