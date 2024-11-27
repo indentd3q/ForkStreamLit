@@ -112,11 +112,11 @@ if uploaded_file:
         elif method_name == 'SMOTEN':
             balancing_method = SMOTEN(random_state=random_state, sampling_strategy=sampling_strategy)
 
-        X_train_resampled = balancing_method.fit_resample(X_train)
+        X_train_resampled, y_train_resampled = balancing_method.fit_resample(X_train, y_train)
 
         # Encode labels
         label_encoder = LabelEncoder()
-        y_train_encoded = label_encoder.fit_transform(y_train)
+        y_train_encoded = label_encoder.fit_transform(y_train_resampled)
         y_test_encoded = label_encoder.transform(y_test)
 
         # Train model
