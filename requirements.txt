@@ -1,8 +1,9 @@
-streamlit
-pandas
-plotly
-numpy
-pydeseq2
-scikit-learn
-imblearn
-matplotlib
+streamlit==1.24.0
+pandas==2.2.3
+plotly==5.24.1
+numpy==2.0.2
+pydeseq2==0.4.10
+scikit-learn==1.5.2
+imblearn==0.0
+matplotlib==3.9.2
+imbalanced-learn==0.12.3

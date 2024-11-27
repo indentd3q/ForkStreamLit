@@ -112,7 +112,7 @@ if uploaded_file:
         # Train model
         if use_hyperparameter_tuning == "Yes":
             st.write("Performing Hyperparameter Tuning...")
-            grid_search = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy', n_jobs=-1, verbose=0)
+            grid_search = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy', n_jobs=-1, verbose=2)
             grid_search.fit(X_train_resampled, y_train_encoded)
             model = grid_search.best_estimator_
             st.write("Best Hyperparameters:", grid_search.best_params_)
