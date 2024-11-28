@@ -19,7 +19,7 @@ def matchingDNA(phenotypeDATA, countsDATA, phenotype_sample_col, counts_sample_c
     """
     colA1 = phenotypeDATA[phenotype_sample_col]
 
-    newFile = countsDATA[['Ensembl_ID'] + [col for col in colA1 if col in countsDATA[counts_sample_col]]]
+    newFile = countsDATA[['Ensembl_ID'] + [col for col in colA1 if col in countsDATA.columns]]
     return pd.DataFrame(newFile)
 
 # App Title
@@ -33,6 +33,7 @@ countsFile = st.file_uploader("Upload Counts Data (CSV)", type=["csv"])
 if phenotypeFile and countsFile:
     phenotype = pd.read_csv(phenotypeFile)
     counts = pd.read_csv(countsFile)
+    preprocess_deg = counts.set_index("Ensembl_ID")
 
     # Configurable Columns
     st.header("Column Selections")
@@ -52,15 +53,14 @@ if phenotypeFile and countsFile:
     selected_race = st.selectbox("Select Race to Analyze", phenotype_unique_races)
 
     phenotype_race_df = seperateByRace(phenotype, selected_race, phenotype_race_col)
+    st.write("phenotype_race_df", phenotype_race_df)
+
     counts_race_df = matchingDNA(
         phenotype_race_df, counts, phenotype_sample_col, counts_sample_col
     )
+    st.write("counts_race_df", counts_race_df)
 
-    def preprocess_deg(counts_data, index_col):
-        counts_data = counts_data.set_index(index_col)
-        return counts_data
-
-    preprocessed_counts_data = preprocess_deg(counts_race_df, counts_sample_col)
+    preprocessed_counts_data = counts_race_df.set_index("Ensembl_ID")
     preprocessed_counts_data = preprocessed_counts_data.fillna(0)
     preprocessed_counts_data = preprocessed_counts_data.round().astype(int)
     preprocessed_counts_data = preprocessed_counts_data[preprocessed_counts_data.sum(axis=1) > 0]
@@ -107,11 +107,11 @@ if phenotypeFile and countsFile:
 
     def filter_deg_results(deg_results):
         deg_results = deg_results[deg_results['padj'] < cutoff_padj]
-        deg_results = deg_results[deg_results['log2FoldChange'] > cutoff_log2FoldChange]
+        deg_results = deg_results[deg_results['log2FoldChange'].abs() > cutoff_log2FoldChange]
         deg_results = deg_results[deg_results['baseMean'] > cutoff_baseMean]
-        deg_results = deg_results[deg_results['pvalue'] > cutoff_pvalue]
+        deg_results = deg_results[deg_results['pvalue'] < cutoff_pvalue]
         deg_results = deg_results[deg_results['lfcSE'] > cutoff_lfcSE]
-        deg_results = deg_results[deg_results['stat'] > cutoff_stat]
+        deg_results = deg_results[deg_results['stat'].abs() > cutoff_stat]
         return deg_results
 
     filtered_deg_results = filter_deg_results(deg_stats_results)
