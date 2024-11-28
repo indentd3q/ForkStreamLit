@@ -56,15 +56,11 @@ if phenotypeFile and countsFile:
         phenotype_race_df, counts, phenotype_sample_col, counts_sample_col
     )
 
-    # Preprocess DEG
-    st.subheader("Preprocessing Counts Data")
-    index_col = st.selectbox("Select Index Column for Counts Data", counts.columns)
-
     def preprocess_deg(counts_data, index_col):
         counts_data = counts_data.set_index(index_col)
         return counts_data
 
-    preprocessed_counts_data = preprocess_deg(counts_race_df, index_col)
+    preprocessed_counts_data = preprocess_deg(counts_race_df, counts_sample_col)
     preprocessed_counts_data = preprocessed_counts_data.fillna(0)
     preprocessed_counts_data = preprocessed_counts_data.round().astype(int)
     preprocessed_counts_data = preprocessed_counts_data[preprocessed_counts_data.sum(axis=1) > 0]
