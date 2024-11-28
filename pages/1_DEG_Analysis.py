@@ -62,13 +62,13 @@ if phenotypeFile and countsFile:
 
     def preprocess_deg(counts_data, index_col):
         counts_data = counts_data.set_index(index_col)
-        counts_data = counts_data.fillna(0)
-        counts_data = counts_data.round().astype(int)
-        counts_data = counts_data[counts_data.sum(axis=1) > 0]
-        counts_data = counts_data.T
         return counts_data
 
     preprocessed_counts_data = preprocess_deg(counts_race_df, index_col)
+    preprocessed_counts_data = preprocessed_counts_data.fillna(0)
+    preprocessed_counts_data = preprocessed_counts_data.round().astype(int)
+    preprocessed_counts_data = preprocessed_counts_data[preprocessed_counts_data.sum(axis=1) > 0]
+    preprocessed_counts_data = preprocessed_counts_data.T
     st.write("Preprocessed Counts Data", preprocessed_counts_data)
 
     # Create Metadata
