@@ -3,69 +3,21 @@ import pandas as pd
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
-# Separates Phenotypes by Race
-def seperateByRace(file, race, race_col):
-    """
-    Searches the phenotype dataframe for the race.demographic column
-    and returns a new dataframe with only the rows that contain the race.
-    """
-    return file[file[race_col].str.contains(race, case=False, na=False)]
-
-# Matches Sample ID from phenotypes to counts
-def matchingDNA(phenotypeDATA, countsDATA, phenotype_sample_col, counts_sample_col):
-    """
-    Matches the race phenotype data to the counts data 
-    and returns a racial-dataframe with the matching data.
-    """
-    colA1 = phenotypeDATA[phenotype_sample_col]
-
-    newFile = countsDATA[['Ensembl_ID'] + [col for col in colA1 if col in countsDATA.columns]]
-    return pd.DataFrame(newFile)
-
 # App Title
 st.title("Differential Gene Expression Analysis with PyDESeq2")
 
 # File Uploads
 st.header("Input Files")
-phenotypeFile = st.file_uploader("Upload Phenotype Data (CSV)", type=["csv"])
-countsFile = st.file_uploader("Upload Counts Data (CSV)", type=["csv"])
+racial_dataset = st.file_uploader("Upload Phenotype Data (CSV)", type=["csv"])
 
-if phenotypeFile and countsFile:
-    phenotype = pd.read_csv(phenotypeFile)
-    counts = pd.read_csv(countsFile)
-    preprocess_deg = counts.set_index("Ensembl_ID")
-
-    # Configurable Columns
-    st.header("Column Selections")
-    phenotype_race_col = st.selectbox(
-        "Select Race Column in Phenotype Data", phenotype.columns
-    )
-    phenotype_sample_col = st.selectbox(
-        "Select Sample ID Column in Phenotype Data", phenotype.columns
-    )
-    counts_sample_col = st.selectbox(
-        "Select Sample ID Column in Counts Data", counts.columns
-    )
-
-    # Process by Race
-    st.header("Race Selection and Preprocessing")
-    phenotype_unique_races = phenotype[phenotype_race_col].unique()
-    selected_race = st.selectbox("Select Race to Analyze", phenotype_unique_races)
-
-    phenotype_race_df = seperateByRace(phenotype, selected_race, phenotype_race_col)
-    st.write("phenotype_race_df", phenotype_race_df)
-
-    counts_race_df = matchingDNA(
-        phenotype_race_df, counts, phenotype_sample_col, counts_sample_col
-    )
-    st.write("counts_race_df", counts_race_df)
-
-    preprocessed_counts_data = counts_race_df.set_index("Ensembl_ID")
-    preprocessed_counts_data = preprocessed_counts_data.fillna(0)
-    preprocessed_counts_data = preprocessed_counts_data.round().astype(int)
-    preprocessed_counts_data = preprocessed_counts_data[preprocessed_counts_data.sum(axis=1) > 0]
-    preprocessed_counts_data = preprocessed_counts_data.T
-    st.write("Preprocessed Counts Data", preprocessed_counts_data)
+if racial_dataset:
+    data = pd.read_csv(racial_dataset)
+    data = data.set_index("Ensembl_ID")
+    data = data.fillna(0)
+    data = data.round().astype(int)
+    data = data[data.sum(axis=1) > 0]
+    data = data.T
+    st.write("Preprocessed Counts Data", data)
 
     # Create Metadata
     def create_metadata(counts_data):
@@ -75,7 +27,7 @@ if phenotypeFile and countsFile:
         ]
         return metadata
 
-    metadata = create_metadata(preprocessed_counts_data)
+    metadata = create_metadata(data)
     st.write("Metadata", metadata)
 
     # DEG Analysis
@@ -93,17 +45,17 @@ if phenotypeFile and countsFile:
         stat_res.summary()
         return stat_res.results_df
 
-    deg_stats_results = initiate_deg(preprocessed_counts_data, metadata)
+    deg_stats_results = initiate_deg(data, metadata)
     st.write("DEG Statistics Results", deg_stats_results)
 
     # Filter DEG Results
     st.header("DEG Filtering Options")
     cutoff_padj = st.number_input("Cutoff for padj", value=0.05)
-    cutoff_log2FoldChange = st.number_input("Cutoff for log2FoldChange", value=0.5)
+    cutoff_log2FoldChange = st.number_input("Cutoff for log2FoldChange", value=0)
     cutoff_baseMean = st.number_input("Cutoff for baseMean", value=10)
-    cutoff_pvalue = st.number_input("Cutoff for pvalue", value=0.05)
-    cutoff_lfcSE = st.number_input("Cutoff for lfcSE", value=0.1)
-    cutoff_stat = st.number_input("Cutoff for stat", value=0.1)
+    cutoff_pvalue = st.number_input("Cutoff for pvalue", value=0)
+    cutoff_lfcSE = st.number_input("Cutoff for lfcSE", value=0)
+    cutoff_stat = st.number_input("Cutoff for stat", value=0)
 
     def filter_deg_results(deg_results):
         deg_results = deg_results[deg_results['padj'] < cutoff_padj]
