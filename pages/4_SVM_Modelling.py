@@ -112,9 +112,11 @@ if uploaded_file:
         elif method_name == 'SMOTEN':
             balancing_method = SMOTEN(random_state=random_state, sampling_strategy=sampling_strategy)
         elif method_name == "No Balancing":
-            balancing_method = None
+            balancing_method = "No Balancing"
 
-        if balancing_method != "No Balancing":
+        if balancing_method == "No Balancing":
+            X_train_resampled, y_train_resampled = X_train, y_train
+        else:
             X_train_resampled, y_train_resampled = balancing_method.fit_resample(X_train, y_train)
 
         # Encode labels
