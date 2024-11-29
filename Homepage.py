@@ -84,6 +84,24 @@ def main():
         - Machine Learning Integration
         """)
 
+    # App Features
+    st.markdown("### 💻 App Features")
+    st.markdown("""
+        1. **Data Segregation** 🔍
+            - Precision phenotype processing
+            - Targeted racial demographic analysis
+        2. **DEG Analysis** 📊
+            - Intelligent Data Refinement
+            - Molecular Pattern Recognition
+        3. **ROC Analysis** 📈
+            - Comprehensive Gene Screening
+            - Predictive Marker Identification
+        3. **Dataset Creation** 📅
+            - Create data for machine learning modelling
+        4. **Modelling** 🤖
+            -  Machine Learning Modelling
+    """)
+
     # Future Work Section
     st.markdown("### 🔮 Future Directions")
     st.markdown("""
@@ -101,35 +119,42 @@ def main():
     creators = [
         {
             "name": "Jheno Syechlo",
+            "nim": "NIM : 00000067872",
             "role": "Data Scientist",
-            "nim" : "00000067872",
             "expertise": "Machine Learning",
-            "image": "🧬"
+            "image": "🛠️"
         },
         {
             "name": "Adithama Mulia",
+            "nim": "NIM : 00000067958",
             "role": "Lead Developer",
-            "nim" : "00000067958",
             "expertise": "Machine Learning",
-            "image": "🤖"
+            "image": "💻"
         },
         {
             "name": "Vincent Kurniawan",
+            "nim": "NIM : 00000068404",
             "role": "Data Scientist",
-            "nim" : "00000068404",
             "expertise": "Machine Learning",
             "image": "🔬"
         }
     ]
-    
+        
     for i, creator in enumerate(creators):
         with creator_cols[i]:
             st.markdown(f"""
-            <div class="creator-card">
-                <h3>{creator['image']} {creator['name']}</h3>
-                <p><strong>Role:</strong> {creator['role']}</p>
-                <p><strong>NIM:</strong> {creator['nim']}</p>
-                <p><strong>Expertise:</strong> {creator['expertise']}</p>
+            <div class="creator-card" style="
+                background-color: #0d1117; 
+                color: #57b1ff; 
+                border-radius: 10px; 
+                padding: 15px; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+                border: 1px solid #444;
+            ">
+                <h3 style="color: #f0f0f0; margin-bottom: -15px;">{creator['image']} {creator['name']}</h3>
+                <h3 style="color: #f0f0f0; ">{creator['nim']}</h3>
+                <p style="margin: 5px 0;"><strong style="color: #a0a0a0;">Role:</strong> {creator['role']}</p>
+                <p style="margin: 5px 0;"><strong style="color: #a0a0a0;">Expertise:</strong> {creator['expertise']}</p>
             </div>
             """, unsafe_allow_html=True)
 
