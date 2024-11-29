@@ -64,6 +64,7 @@ st.info("""
 
 # Mission Statement
 st.markdown("""
-    #### Mission: 
-    Transforming Complex Genomic Data into Actionable Cancer Insights
+     #### About This Application
+    A cutting-edge genomic analysis platform designed to streamline cancer detection 
+    through advanced feature selection and machine learning techniques.
 """)
