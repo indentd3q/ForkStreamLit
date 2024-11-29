@@ -150,11 +150,34 @@ def main():
                 padding: 15px; 
                 box-shadow: 0 4px 6px rgba(0,0,0,0.3);
                 border: 1px solid #444;
+                text-align: left;
             ">
-                <h3 style="color: #f0f0f0; margin-bottom: -15px;">{creator['image']} {creator['name']}</h3>
-                <h3 style="color: #f0f0f0; ">{creator['nim']}</h3>
-                <p style="margin: 5px 0;"><strong style="color: #a0a0a0;">Role:</strong> {creator['role']}</p>
-                <p style="margin: 5px 0;"><strong style="color: #a0a0a0;">Expertise:</strong> {creator['expertise']}</p>
+                <h3 style="
+                    color: #f0f0f0; 
+                    margin-bottom: 10px; 
+                    text-align: center;
+                ">{creator['image']} {creator['name']}</h3>
+                <h3 style="
+                    color: #f0f0f0; 
+                    text-align: center; 
+                    margin-bottom: 15px;
+                ">{creator['nim']}</h3>
+                <p style="
+                    margin: 5px 0; 
+                    display: flex; 
+                    justify-content: space-between;
+                ">
+                    <strong style="color: #a0a0a0;">Role:</strong> 
+                    <span>{creator['role']}</span>
+                </p>
+                <p style="
+                    margin: 5px 0; 
+                    display: flex; 
+                    justify-content: space-between;
+                ">
+                    <strong style="color: #a0a0a0;">Expertise:</strong> 
+                    <span>{creator['expertise']}</span>
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
