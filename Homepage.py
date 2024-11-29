@@ -33,11 +33,20 @@ st.markdown("""
     }
     .creator-card {
         background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 12px;
         text-align: center;
         color: navy;
+        font-size: 0.9em;
+    }
+    .creator-card h3 {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
+    .creator-card p {
+        margin: 5px 0;
+        font-size: 0.85em;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -91,7 +100,7 @@ def main():
     
     creators = [
         {
-            "name": "Jheno Syechlo ",
+            "name": "Jheno Syechlo",
             "role": "Data Scientist",
             "expertise": "Machine Learning",
             "image": "🧬"
