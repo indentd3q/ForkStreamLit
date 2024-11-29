@@ -5,26 +5,20 @@ from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
 def main():
-    # App Configuration
     st.set_page_config(page_title="DEG Analysis", layout="wide")
-
-    # App Title
     st.title("🧬 Differential Gene Expression Analysis")
 
-    # Sidebar for File Upload
-    st.sidebar.header("📂 Data Upload")
-    racial_dataset = st.sidebar.file_uploader(
+    # File Upload Section
+    st.header("📂 Data Upload")
+    racial_dataset = st.file_uploader(
         "Upload Counts Data", 
         type=["csv", "xlsx"], 
         help="Upload your gene expression counts data"
     )
 
-    # Main content area
     if racial_dataset:
-        # Data Preprocessing
         data = load_and_preprocess_data(racial_dataset)
         
-        # Tabs for different views
         tab1, tab2, tab3 = st.tabs([
             "📊 Data Overview", 
             "🧮 DEG Analysis", 
@@ -43,16 +37,13 @@ def main():
             deg_filtering_section(deg_results)
 
 def load_and_preprocess_data(uploaded_file):
-    """Load and preprocess the uploaded data"""
-    st.sidebar.success("File Uploaded Successfully!")
+    st.success("File Uploaded Successfully!")
     
-    # Read file based on extension
     if uploaded_file.name.endswith(".csv"):
         data = pd.read_csv(uploaded_file)
     else:
         data = pd.read_excel(uploaded_file, engine="openpyxl")
     
-    # Data preprocessing steps
     data = data.set_index("Ensembl_ID")
     data = data.fillna(0)
     data = data.round().astype(np.int32)
@@ -62,23 +53,19 @@ def load_and_preprocess_data(uploaded_file):
     return data
 
 def display_data_overview(data):
-    """Display data overview and metadata"""
     st.subheader("Preprocessed Counts Data")
     st.dataframe(data.head(5))
     
-    # Create Metadata
     metadata = create_metadata(data)
     st.subheader("Metadata")
     st.dataframe(metadata)
 
 def create_metadata(counts_data):
-    """Create metadata from counts data"""
     conditions = ['cancer' if '-01' in sample else 'normal' for sample in counts_data.index]
     metadata = pd.DataFrame({'Ensembl_ID': counts_data.index, 'Condition': conditions})
     return metadata.set_index('Ensembl_ID')
 
 def perform_deg_analysis(data):
-    """Perform Differential Expression Analysis"""
     metadata = create_metadata(data)
     
     dds = DeseqDataSet(
@@ -95,10 +82,8 @@ def perform_deg_analysis(data):
     return stat_res.results_df
 
 def deg_filtering_section(deg_results):
-    """Create interactive DEG filtering section"""
     st.subheader("DEG Filtering Options")
     
-    # Create columns for filter inputs
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -113,7 +98,6 @@ def deg_filtering_section(deg_results):
         cutoff_lfcSE = st.number_input("LFC Standard Error", value=0.0, step=0.1)
         cutoff_stat = st.number_input("Stat", value=0.0, step=0.1)
     
-    # Filter button
     if st.button("Apply Filters"):
         filtered_results = filter_deg_results(
             deg_results, 
@@ -140,7 +124,6 @@ def filter_deg_results(
     cutoff_lfcSE, 
     cutoff_stat
 ):
-    """Filter DEG results based on user-defined cutoffs"""
     filtered_results = deg_results.copy()
     
     filtered_results = filtered_results[filtered_results['padj'] < cutoff_padj]
