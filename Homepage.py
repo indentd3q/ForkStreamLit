@@ -128,6 +128,7 @@ def main():
             <div class="creator-card">
                 <h3>{creator['image']} {creator['name']}</h3>
                 <p><strong>Role:</strong> {creator['role']}</p>
+                <p><strong>NIM:</strong> {creator['nim']}</p>
                 <p><strong>Expertise:</strong> {creator['expertise']}</p>
             </div>
             """, unsafe_allow_html=True)
