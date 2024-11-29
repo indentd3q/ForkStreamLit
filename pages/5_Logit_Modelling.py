@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score, pre
 
 # App Title
 st.set_page_config(layout="wide", page_title="Logistic Regression Analysis")
-st.title("🔬 Logistic Regression Model Comparator")
+st.title("🧬 Logistic Regression Model Comparator")
 st.markdown("*Compare different balancing techniques and model configurations*")
 
 # Upload dataset
