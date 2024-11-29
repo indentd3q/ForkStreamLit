@@ -2,43 +2,83 @@ import streamlit as st
 
 # Page Configuration
 st.set_page_config(
-    page_title="Homepage", 
-    page_icon=":penguin:", 
+    page_title="Cancer Detection Feature Selection", 
+    page_icon="🧬", 
     layout="wide", 
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for styling
+# Custom CSS for enhanced styling
 st.markdown("""
     <style>
     .reportview-container { 
-        background-color: #f0f2f6; 
+        background-color: #f4f6f9; 
     }
     .stTitle {
-        color: #2c3e50;
+        color: #1a5f7a;
         font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .stMarkdown {
+        color: #2c3e50;
+    }
+    .stInfo {
+        background-color: #e6f2ff;
+        border-left: 5px solid #3498db;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Main Page
-st.title("Optimized Feature Selection for Cancer Detection")
+# Main Page Title
+st.title("🧬 Comprehensive Cancer Detection Pipeline")
 
-st.write("Please make sure the sample IDs is using the TCGA format!")
+# Workflow Overview
+st.markdown("""
+    ### Advanced Genomic Analysis Platform
 
-st.write("1. The Data Segragation page contain file for phenotype file and counts file that will be spearate and match based on the white race")
+    #### Workflow Stages:
+    1. **Data Segregation**
+       - Process phenotype and counts files
+       - Segment data based on white race criteria
 
-st.write("2. DEG analysis page used dataset that have been merged from previous page, in this page there are several step to conduct DEG : ")
-st.write("- Cleaning data by dropping missing value and rounding the value to integer")
-st.write("- Labelling the data with normal and cancer so DEG can be computed")
-st.write("- Use feature selection to select best gene, the best gene will be used for ROC analysis")
+    2. **Differential Expression Gene (DEG) Analysis**
+       - Data Cleaning
+         * Remove missing values
+         * Round values to integers
+       - Data Labeling
+         * Classify samples as normal or cancer
+       - Feature Selection
+         * Identify most significant genes
+         * Prepare for ROC analysis
 
-st.write("3. Use ROC analysis to find best gene that will be used for modelling")
+    3. **ROC Analysis**
+       - Evaluate gene performance
+       - Select top-performing genes
 
-st.write("4. Use modelling (SVM, Naive Bayes, Logistic Regression) to find best model that will be used for prediction")
-st.write("- The dataset that will be used is from ROC analysis")
-st.write("- The first step is splitting the data for normal and cancer")
+    4. **Predictive Modeling**
+       - Supported Models:
+         * Support Vector Machine (SVM)
+         * Naive Bayes
+         * Logistic Regression
+       
+       Key Modeling Steps:
+       - Data Splitting (normal vs. cancer)
+       - Data Balancing (1:3 ratio)
+       - Hyperparameter Tuning
+       - Model Performance Comparison
+""")
 
-st.write("- The third step is using hyperparameter tuning to find best model")
-st.write("- The hyperparameter for each model is different")
-st.write("- The result for each model will be shown in the result table")
+# Quick Start Guide
+st.info("""
+    🚀 **Getting Started**
+    - Ensure sample IDs follow TCGA format
+    - Prepare high-quality genomic datasets
+    - Navigate through intuitive feature selection tools
+""")
+
+# Additional Context
+st.markdown("""
+    #### About This Application
+    A cutting-edge genomic analysis platform designed to streamline cancer detection 
+    through advanced feature selection and machine learning techniques.
+""")
