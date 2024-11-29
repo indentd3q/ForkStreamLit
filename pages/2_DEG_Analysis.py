@@ -1,78 +1,156 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
-import numpy as np
 
-# App Title
-st.title("Differential Gene Expression Analysis with PyDESeq2")
+def main():
+    # App Configuration
+    st.set_page_config(page_title="DEG Analysis", layout="wide")
 
-# File Uploads
-st.header("Input Files")
-racial_dataset = st.file_uploader("Upload Data (.csv OR .xlsx)", type=["csv", "xlsx"])
+    # App Title
+    st.title("🧬 Differential Gene Expression Analysis")
 
-if racial_dataset:
-    st.write("Processing dataset....")
-    if racial_dataset.name.endswith(".csv"):
-        data = pd.read_csv(racial_dataset)
-    elif racial_dataset.name.endswith(".xlsx"):
-        data = pd.read_excel(racial_dataset, engine="openpyxl")
-        data = pd.read_excel(racial_dataset, engine="openpyxl")
+    # Sidebar for File Upload
+    st.sidebar.header("📂 Data Upload")
+    racial_dataset = st.sidebar.file_uploader(
+        "Upload Counts Data", 
+        type=["csv", "xlsx"], 
+        help="Upload your gene expression counts data"
+    )
+
+    # Main content area
+    if racial_dataset:
+        # Data Preprocessing
+        data = load_and_preprocess_data(racial_dataset)
+        
+        # Tabs for different views
+        tab1, tab2, tab3 = st.tabs([
+            "📊 Data Overview", 
+            "🧮 DEG Analysis", 
+            "🔍 Filtered Results"
+        ])
+        
+        with tab1:
+            display_data_overview(data)
+        
+        with tab2:
+            deg_results = perform_deg_analysis(data)
+            st.write("DEG Statistics Results")
+            st.dataframe(deg_results)
+        
+        with tab3:
+            deg_filtering_section(deg_results)
+
+def load_and_preprocess_data(uploaded_file):
+    """Load and preprocess the uploaded data"""
+    st.sidebar.success("File Uploaded Successfully!")
+    
+    # Read file based on extension
+    if uploaded_file.name.endswith(".csv"):
+        data = pd.read_csv(uploaded_file)
+    else:
+        data = pd.read_excel(uploaded_file, engine="openpyxl")
+    
+    # Data preprocessing steps
     data = data.set_index("Ensembl_ID")
     data = data.fillna(0)
     data = data.round().astype(np.int32)
     data = data[data.sum(axis=1) > 0]
     data = data.T
+    
+    return data
 
-    st.write("Preprocessed Counts Data")
+def display_data_overview(data):
+    """Display data overview and metadata"""
+    st.subheader("Preprocessed Counts Data")
     st.dataframe(data.head(5))
-
+    
     # Create Metadata
-    def create_metadata(counts_data):
-        conditions = ['cancer' if '-01' in sample else 'normal' for sample in counts_data.index]
-        metadata = pd.DataFrame({'Ensembl_ID': counts_data.index, 'Condition': conditions})
-        metadata = metadata.set_index('Ensembl_ID')
-        return metadata
-
     metadata = create_metadata(data)
-    st.write("Metadata")
+    st.subheader("Metadata")
     st.dataframe(metadata)
 
-    def initiate_deg(counts_data, metadata):
-        dds = DeseqDataSet(
-            counts=counts_data,
-            metadata=metadata,
-            design_factors="Condition",
-            n_cpus=-1
+def create_metadata(counts_data):
+    """Create metadata from counts data"""
+    conditions = ['cancer' if '-01' in sample else 'normal' for sample in counts_data.index]
+    metadata = pd.DataFrame({'Ensembl_ID': counts_data.index, 'Condition': conditions})
+    return metadata.set_index('Ensembl_ID')
+
+def perform_deg_analysis(data):
+    """Perform Differential Expression Analysis"""
+    metadata = create_metadata(data)
+    
+    dds = DeseqDataSet(
+        counts=data,
+        metadata=metadata,
+        design_factors="Condition",
+        n_cpus=-1
+    )
+    dds.deseq2()
+    
+    stat_res = DeseqStats(dds, contrast=("Condition", "cancer", "normal"))
+    stat_res.summary()
+    
+    return stat_res.results_df
+
+def deg_filtering_section(deg_results):
+    """Create interactive DEG filtering section"""
+    st.subheader("DEG Filtering Options")
+    
+    # Create columns for filter inputs
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        cutoff_padj = st.number_input("Padj Cutoff", value=0.05, min_value=0.0, max_value=1.0, step=0.01)
+        cutoff_log2FoldChange = st.number_input("Log2 Fold Change", value=0.0, step=0.5)
+    
+    with col2:
+        cutoff_baseMean = st.number_input("Base Mean", value=10, min_value=0)
+        cutoff_pvalue = st.number_input("P-value", value=0.0, min_value=0.0, max_value=1.0, step=0.01)
+    
+    with col3:
+        cutoff_lfcSE = st.number_input("LFC Standard Error", value=0.0, step=0.1)
+        cutoff_stat = st.number_input("Stat", value=0.0, step=0.1)
+    
+    # Filter button
+    if st.button("Apply Filters"):
+        filtered_results = filter_deg_results(
+            deg_results, 
+            cutoff_padj, 
+            cutoff_log2FoldChange, 
+            cutoff_baseMean, 
+            cutoff_pvalue, 
+            cutoff_lfcSE, 
+            cutoff_stat
         )
-        dds.deseq2()
-        stat_res = DeseqStats(dds, contrast=("Condition", "cancer", "normal"))
-        stat_res.summary()
-        return stat_res.results_df
+        
+        st.subheader("Filtered Results")
+        st.dataframe(filtered_results)
+        
+        st.subheader("DEG Genes")
+        st.write(filtered_results.index.to_list())
 
-    deg_stats_results = initiate_deg(data, metadata)
-    st.write("DEG Statistics Results", deg_stats_results)
+def filter_deg_results(
+    deg_results, 
+    cutoff_padj, 
+    cutoff_log2FoldChange, 
+    cutoff_baseMean, 
+    cutoff_pvalue, 
+    cutoff_lfcSE, 
+    cutoff_stat
+):
+    """Filter DEG results based on user-defined cutoffs"""
+    filtered_results = deg_results.copy()
+    
+    filtered_results = filtered_results[filtered_results['padj'] < cutoff_padj]
+    filtered_results = filtered_results[filtered_results['log2FoldChange'].abs() > cutoff_log2FoldChange]
+    filtered_results = filtered_results[filtered_results['baseMean'] > cutoff_baseMean]
+    filtered_results = filtered_results[filtered_results['pvalue'] < cutoff_pvalue]
+    filtered_results = filtered_results[filtered_results['lfcSE'] > cutoff_lfcSE]
+    filtered_results = filtered_results[filtered_results['stat'].abs() > cutoff_stat]
+    
+    return filtered_results
 
-    # Filter DEG Results
-    st.header("DEG Filtering Options")
-    cutoff_padj = st.number_input("Cutoff for padj", value=0.05)
-    cutoff_log2FoldChange = st.number_input("Cutoff for log2FoldChange", value=0.0)
-    cutoff_baseMean = st.number_input("Cutoff for baseMean", value=10)
-    cutoff_pvalue = st.number_input("Cutoff for pvalue", value=0.0)
-    cutoff_lfcSE = st.number_input("Cutoff for lfcSE", value=0.0)
-    cutoff_stat = st.number_input("Cutoff for stat", value=0.0)
-
-    def filter_deg_results(deg_results):
-        deg_results = deg_results[deg_results['padj'] < cutoff_padj]
-        deg_results = deg_results[deg_results['log2FoldChange'].abs() > cutoff_log2FoldChange]
-        deg_results = deg_results[deg_results['baseMean'] > cutoff_baseMean]
-        deg_results = deg_results[deg_results['pvalue'] < cutoff_pvalue]
-        deg_results = deg_results[deg_results['lfcSE'] > cutoff_lfcSE]
-        deg_results = deg_results[deg_results['stat'].abs() > cutoff_stat]
-        return deg_results
-
-    filtered_deg_results = filter_deg_results(deg_stats_results)
-    st.write("Filtered DEG Results", filtered_deg_results)
-
-    # Display DEG Genes
-    st.write("DEG Genes", filtered_deg_results.index.to_list())
+if __name__ == "__main__":
+    main()
