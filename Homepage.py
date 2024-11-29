@@ -12,7 +12,7 @@ st.set_page_config(
 st.markdown("""
     <style>
     .reportview-container { 
-        background-color: #e6f3ff;
+        background-color: #072947;
     }
     .stTitle {
         color: #0066cc;
