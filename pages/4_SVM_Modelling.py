@@ -62,9 +62,9 @@ if uploaded_file:
         "Select Balancing Methods",
         options=[
             'RandomOverSampler', 'SVMSMOTE', 'SMOTEENN', 'SMOTETomek',
-            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE'
+            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE', 'RandomOverSampler',
         ],
-        default=['RandomOverSampler']
+        default=["No Balancing"]
     )
 
     # Global configuration for sampling
@@ -111,8 +111,11 @@ if uploaded_file:
             balancing_method = KMeansSMOTE(random_state=random_state, sampling_strategy=sampling_strategy)
         elif method_name == 'SMOTEN':
             balancing_method = SMOTEN(random_state=random_state, sampling_strategy=sampling_strategy)
+        elif method_name == "No Balancing":
+            balancing_method = None
 
-        X_train_resampled, y_train_resampled = balancing_method.fit_resample(X_train, y_train)
+        if balancing_method != "No Balancing":
+            X_train_resampled, y_train_resampled = balancing_method.fit_resample(X_train, y_train)
 
         # Encode labels
         label_encoder = LabelEncoder()
