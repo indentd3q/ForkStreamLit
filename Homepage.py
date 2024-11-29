@@ -8,24 +8,37 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced Custom CSS for white font and adjusted shadow
-st.markdown(
-    """
+# Enhanced Custom CSS
+st.markdown("""
     <style>
-    body {
-        color: white; /* Set text color to white */
-        text-shadow: none; /* Remove text shadow */
+    .reportview-container { 
+        background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
     }
-    h1, h2, h3, h4, h5, h6 {
-        color: white; /* Ensure all headings have white color */
+    .stTitle {
+        color: #0066cc;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,102,204,0.2);
+        text-align: center;
     }
     .stMarkdown {
-        color: white; /* Ensure Markdown content text is white */
+        color: #2c3e50;
+    }
+    .stInfo {
+        background-color: #e6f3ff;
+        border-left: 6px solid #00a2ff;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0,162,255,0.1);
+        padding: 15px;
+    }
+    .creator-card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 20px;
+        text-align: center;
     }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
 # Main Content Sections
 def main():
@@ -42,19 +55,19 @@ def main():
         st.markdown("""
         #### **Data Requirements:**
         1. **Gene Expression Data:**
-           - *Source*: RNA-seq datasets (STAR-Counts), Retrieved from XenaBrowser by UCSC
+           - *Source*: RNA-seq datasets (STAR-Counts)
            - *Format*: Tabular data 
            - *Columns*: Genes as rows, samples as columns
            - *Content*: Normalized gene expression levels
 
         2. **Phenotype Data:**
-           - *Source*: Clinical datasets (GDC TCGA), Retrieved from XenaBrowser by UCSC
+           - *Source*: Clinical datasets (GDC TCGA)
            - *Format*: Sample metadata
         """)
 
     with col2:
         st.info("""
-        🚀 **Research Insights**
+        🚀 **Research Accelerator**
         - TCGA-Compliant Processing
         - Advanced Genomic Insights
         - Machine Learning Integration
@@ -62,10 +75,10 @@ def main():
 
     # Creator Section
     st.markdown("### 👥 Research Team")
-
+    
     # Create columns for creator profiles
     creator_cols = st.columns(3)
-
+    
     creators = [
         {
             "name": "Dr. Emily Rodriguez",
@@ -86,15 +99,15 @@ def main():
             "image": "🔬"
         }
     ]
-
+    
     for i, creator in enumerate(creators):
         with creator_cols[i]:
             st.markdown(f"""
-            {creator['image']} {creator['name']}
-
-            Role: {creator['role']}
-
-            Expertise: {creator['expertise']}
+            <div class="creator-card">
+                <h3>{creator['image']} {creator['name']}</h3>
+                <p><strong>Role:</strong> {creator['role']}</p>
+                <p><strong>Expertise:</strong> {creator['expertise']}</p>
+            </div>
             """, unsafe_allow_html=True)
 
     # Future Work Section
