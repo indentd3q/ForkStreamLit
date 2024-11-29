@@ -161,16 +161,19 @@ if uploaded_file:
 
     # Download option
     @st.cache_data
-    def convert_to_csv(df, file_path):
+    def convert_to_excel(df, file_path):
         with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
             df.to_excel(writer, index=False, sheet_name='results')
-        return df
+        return file_path
+
+    # Save DataFrame to a temporary path
+    file_path = convert_to_excel(results_df, "results.xlsx")
 
     st.download_button(
         label="Download Results as XLSX",
-        data=convert_to_csv(results_df, "results.xlsx"),
-        file_name="results.xslx",
-        mime="text/csv"
+        data=open(file_path, "rb").read(),
+        file_name="results.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 else:
     st.warning("Please upload a dataset to proceed.")
