@@ -62,7 +62,7 @@ if uploaded_file:
         "Select Balancing Methods",
         options=[
             'RandomOverSampler', 'SVMSMOTE', 'SMOTEENN', 'SMOTETomek',
-            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE', 'RandomOverSampler',
+            'ADASYN', 'BorderlineSMOTE', 'KMeansSMOTE', 'No Balancing',
         ],
         default=["No Balancing"]
     )
