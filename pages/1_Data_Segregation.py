@@ -65,12 +65,13 @@ st.markdown("### 🌍 Race Selection")
 st.info("Choose one or more racial demographics to process")
 
 # Improved Race Selection
-races = phenotype_file["race.demographic"].unique()
-selected_races = st.multiselect(
-    "Select Races to Separate", 
-    races, 
-    help="Select the racial demographics you want to segregate and analyze"
-)
+if phenotype_file != None:
+    races = phenotype_file["race.demographic"].unique()
+    selected_races = st.multiselect(
+        "Select Races to Separate", 
+        races, 
+        help="Select the racial demographics you want to segregate and analyze"
+    )
 
 # Process Section with Expander
 with st.expander("⚙️ Process Data"):
