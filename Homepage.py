@@ -12,7 +12,7 @@ st.set_page_config(
 st.markdown("""
     <style>
     .reportview-container { 
-        background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+        background-color: #e6f3ff;
     }
     .stTitle {
         color: #0066cc;
@@ -78,7 +78,7 @@ def main():
 
     with col2:
         st.info("""
-        🚀 **Research Accelerator**
+        🚀 **Research Insight**
         - TCGA-Compliant Processing
         - Advanced Genomic Insights
         - Machine Learning Integration
