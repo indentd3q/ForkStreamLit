@@ -31,7 +31,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Bright Title
-st.title("🧬 A cutting-edge genomic analysis platform designed to streamline cancer detection through advanced feature selection and machine learning techniques.")
+st.title("🧬 Optimized Feature Selection for Cancer Detection using Machine Learning")
 
 # Workflow with Vibrant Formatting
 st.markdown("""
