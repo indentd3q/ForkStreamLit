@@ -37,6 +37,7 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         padding: 20px;
         text-align: center;
+        color: navy;
     }
     </style>
 """, unsafe_allow_html=True)
