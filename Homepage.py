@@ -31,7 +31,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Bright Title
-st.title("🧬 Cutting-Edge Cancer Detection Analytics")
+st.title("🧬 A cutting-edge genomic analysis platform designed to streamline cancer detection through advanced feature selection and machine learning techniques.")
 
 # Workflow with Vibrant Formatting
 st.markdown("""
@@ -62,9 +62,3 @@ st.info("""
     - Cutting-Edge Genomic Insights
 """)
 
-# Mission Statement
-st.markdown("""
-     #### About This Application
-    A cutting-edge genomic analysis platform designed to streamline cancer detection 
-    through advanced feature selection and machine learning techniques.
-""")
