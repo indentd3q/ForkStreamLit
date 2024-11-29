@@ -9,7 +9,9 @@ from imblearn.combine import SMOTEENN, SMOTETomek
 from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
 
 # App Title
-st.title("Logistic Regression with Balancing and Hyperparameters")
+st.set_page_config(layout="wide", page_title="Logistic Regression Analysis")
+st.title("🔬 Logistic Regression Model Comparator")
+st.markdown("*Compare different balancing techniques and model configurations*")
 
 # Upload dataset
 uploaded_file = st.file_uploader("Upload your dataset (.csv or .xlsx)", type=["csv", "xlsx"])
@@ -21,44 +23,39 @@ if uploaded_file:
     elif uploaded_file.name.endswith(".xlsx"):
         data = pd.read_excel(uploaded_file)
 
-    st.write("Uploaded Dataset", data)
-
-    features_df = data.iloc[:, 1:]
-    features_df = features_df.round().astype(int).T
-    X = np.asarray(features_df)
+    st.sidebar.header("Configuration")
 
     # Select index column
-    index_col = st.selectbox("Select Index Column", options=data.columns)
+    index_col = st.sidebar.selectbox("Select Index Column", options=data.columns)
     data = data.set_index(index_col)
     data = data.round().astype(int)
     data = data.T
 
     # Generate label column
     data['label'] = ['cancer' if '-01' in sample else 'normal' for sample in data.index]
+    
+    st.sidebar.subheader("Dataset Preview")
+    st.sidebar.dataframe(data.head())
+    
+    # Display class distribution
+    st.sidebar.subheader("Class Distribution")
+    class_dist = data['label'].value_counts()
+    st.sidebar.bar_chart(class_dist)
+
+    features_df = data.iloc[:, :-1]
+    X = np.asarray(features_df)
     y = np.asarray(data['label'])
 
-    # Display class distribution
-    st.write("Class Distribution", data['label'].value_counts())
-    
-    st.write("X dataframe")
-    st.dataframe(X)
-
-    st.write("y dataframe")
-    st.dataframe(y)
-
     # Data splitting options
-    test_size = st.slider("Test Set Size (%)", min_value=10, max_value=50, value=40, step=1) / 100
-    stratify_option = st.checkbox("Stratify Split", value=True)
+    test_size = st.sidebar.slider("Test Set Size (%)", min_value=10, max_value=50, value=40, step=1) / 100
+    stratify_option = st.sidebar.checkbox("Stratify Split", value=True)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=42, stratify=y if stratify_option else None
     )
 
-    st.write("Training Set Size:", len(X_train))
-    st.write("Test Set Size:", len(X_test))
-
     # Balancing methods selection
-    selected_balancing_methods = st.multiselect(
+    selected_balancing_methods = st.sidebar.multiselect(
         "Select Balancing Methods",
         options=[
             'RandomOverSampler', 'SVMSMOTE', 'SMOTEENN', 'SMOTETomek',
@@ -68,13 +65,13 @@ if uploaded_file:
     )
 
     # Global configuration for sampling
-    sampling_strategy = st.slider(
-        "Sampling Strategy (proportion of the minority class)", 
+    sampling_strategy = st.sidebar.slider(
+        "Sampling Strategy (proportion of minority class)", 
         min_value=0.1, max_value=10.0, value=0.3, step=0.1
     )
 
     # Hyperparameter tuning
-    use_hyperparameter_tuning = st.radio("Use Hyperparameter Tuning?", options=['Yes', 'No'], index=1)
+    use_hyperparameter_tuning = st.sidebar.radio("Use Hyperparameter Tuning?", options=['Yes', 'No'], index=1)
     param_grid = {
         'penalty': ['l1', 'l2', 'elasticnet', 'none'],
         'C': [0.01, 0.1, 1, 10],
@@ -159,7 +156,7 @@ if uploaded_file:
         results_df = pd.concat([results_df, new_row], ignore_index=True)
 
     # Display results
-    st.write("Results", results_df)
+    st.write("Results Comparison", results_df)
 
     # Download option
     @st.cache_data
