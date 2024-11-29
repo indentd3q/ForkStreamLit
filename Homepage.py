@@ -102,18 +102,21 @@ def main():
         {
             "name": "Jheno Syechlo",
             "role": "Data Scientist",
+            "nim" : "00000067872",
             "expertise": "Machine Learning",
             "image": "🧬"
         },
         {
             "name": "Adithama Mulia",
             "role": "Lead Developer",
+            "nim" : "00000067958",
             "expertise": "Machine Learning",
             "image": "🤖"
         },
         {
             "name": "Vincent Kurniawan",
             "role": "Data Scientist",
+            "nim" : "00000068404",
             "expertise": "Machine Learning",
             "image": "🔬"
         }
