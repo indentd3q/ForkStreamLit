@@ -18,7 +18,7 @@ if racial_dataset:
     data = data.round().astype(int)
     data = data[data.sum(axis=1) > 0]
     data = data.T
-    st.write("Preprocessed Counts Data", data.head())
+    st.write("Preprocessed Counts Data", data.head(5))
 
     # Create Metadata
     def create_metadata(counts_data):
