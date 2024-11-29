@@ -73,6 +73,14 @@ def main():
         - Machine Learning Integration
         """)
 
+    # Future Work Section
+    st.markdown("### 🔮 Future Directions")
+    st.markdown("""
+    - Expand machine learning models
+    - Integrate more diverse datasets
+    - Develop personalized cancer prediction algorithms
+    """)
+
     # Creator Section
     st.markdown("### 👥 Research Team")
     
@@ -109,14 +117,6 @@ def main():
                 <p><strong>Expertise:</strong> {creator['expertise']}</p>
             </div>
             """, unsafe_allow_html=True)
-
-    # Future Work Section
-    st.markdown("### 🔮 Future Directions")
-    st.markdown("""
-    - Expand machine learning models
-    - Integrate more diverse datasets
-    - Develop personalized cancer prediction algorithms
-    """)
 
 # Run the main function
 if __name__ == "__main__":
