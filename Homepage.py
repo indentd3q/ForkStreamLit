@@ -21,7 +21,7 @@ st.markdown("""
         text-align: center;
     }
     .stMarkdown {
-        color: #2c3e50;
+        color: #FFFFFF;
     }
     .stInfo {
         background-color: #e6f3ff;
@@ -29,6 +29,7 @@ st.markdown("""
         border-radius: 5px;
         box-shadow: 0 4px 6px rgba(0,162,255,0.1);
         padding: 15px;
+        color: #FFFFFF
     }
     .creator-card {
         background-color: #ffffff;
