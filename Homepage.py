@@ -8,77 +8,62 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for enhanced styling
+# Bright and vibrant custom CSS
 st.markdown("""
     <style>
     .reportview-container { 
-        background-color: #f4f6f9; 
+        background-color: #f0f8ff; 
     }
     .stTitle {
-        color: #1a5f7a;
+        color: #0066cc;
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        text-shadow: 2px 2px 4px rgba(0,102,204,0.2);
     }
     .stMarkdown {
         color: #2c3e50;
     }
     .stInfo {
-        background-color: #e6f2ff;
-        border-left: 5px solid #3498db;
+        background-color: #e6f3ff;
+        border-left: 6px solid #00a2ff;
+        box-shadow: 0 4px 6px rgba(0,162,255,0.1);
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Main Page Title
-st.title("🧬 Comprehensive Cancer Detection Pipeline")
+# Bright Title
+st.title("🧬 Cutting-Edge Cancer Detection Analytics")
 
-# Workflow Overview
+# Workflow with Vibrant Formatting
 st.markdown("""
-    ### Advanced Genomic Analysis Platform
+    ### 🌟 Advanced Genomic Exploration Platform
 
-    #### Workflow Stages:
-    1. **Data Segregation**
-       - Process phenotype and counts files
-       - Segment data based on white race criteria
+    #### **Workflow Dynamics:**
+    1. **Data Segregation** 🔍
+       - Precision phenotype processing
+       - Targeted racial demographic analysis
 
-    2. **Differential Expression Gene (DEG) Analysis**
-       - Data Cleaning
-         * Remove missing values
-         * Round values to integers
-       - Data Labeling
-         * Classify samples as normal or cancer
-       - Feature Selection
-         * Identify most significant genes
-         * Prepare for ROC analysis
+    2. **Gene Expression Analysis** 📊
+       - Intelligent Data Refinement
+       - Molecular Pattern Recognition
 
-    3. **ROC Analysis**
-       - Evaluate gene performance
-       - Select top-performing genes
+    3. **Performance Validation** ✨
+       - Comprehensive Gene Screening
+       - Predictive Marker Identification
 
-    4. **Predictive Modeling**
-       - Supported Models:
-         * Support Vector Machine (SVM)
-         * Naive Bayes
-         * Logistic Regression
-       
-       Key Modeling Steps:
-       - Data Splitting (normal vs. cancer)
-       - Data Balancing (1:3 ratio)
-       - Hyperparameter Tuning
-       - Model Performance Comparison
+    4. **Intelligent Modeling** 🤖
+       - Multi-Model Predictive Strategies
+       - Adaptive Machine Learning Techniques
 """)
 
-# Quick Start Guide
+# Bright Call to Action
 st.info("""
-    🚀 **Getting Started**
-    - Ensure sample IDs follow TCGA format
-    - Prepare high-quality genomic datasets
-    - Navigate through intuitive feature selection tools
+    🚀 **Accelerate Your Research**
+    - TCGA-Compliant Data Processing
+    - Cutting-Edge Genomic Insights
 """)
 
-# Additional Context
+# Mission Statement
 st.markdown("""
-    #### About This Application
-    A cutting-edge genomic analysis platform designed to streamline cancer detection 
-    through advanced feature selection and machine learning techniques.
+    #### Mission: 
+    Transforming Complex Genomic Data into Actionable Cancer Insights
 """)
