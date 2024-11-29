@@ -11,13 +11,14 @@ st.header("Input Files")
 racial_dataset = st.file_uploader("Upload Phenotype Data (CSV)", type=["csv"])
 
 if racial_dataset:
+    st.write("Processing dataset....")
     data = pd.read_csv(racial_dataset)
     data = data.set_index("Ensembl_ID")
     data = data.fillna(0)
     data = data.round().astype(int)
     data = data[data.sum(axis=1) > 0]
     data = data.T
-    st.write("Preprocessed Counts Data", data)
+    st.write("Preprocessed Counts Data", data.head())
 
     # Create Metadata
     def create_metadata(counts_data):
