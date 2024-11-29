@@ -161,14 +161,14 @@ if uploaded_file:
 
     # Download option
     @st.cache_data
-    def convert_to_csv(df):
-        with pd.ExcelWriter("/", engine='openpyxl') as writer:
+    def convert_to_csv(df, file_path):
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
             df.to_excel(writer, index=False, sheet_name='results')
         return df
 
     st.download_button(
         label="Download Results as XLSX",
-        data=convert_to_csv(results_df),
+        data=convert_to_csv(results_df, "results.xlsx"),
         file_name="results.xslx",
         mime="text/csv"
     )
