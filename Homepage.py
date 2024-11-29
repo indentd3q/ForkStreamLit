@@ -84,28 +84,28 @@ def main():
     """)
 
     # Creator Section
-    st.markdown("### 👥 Research Team")
+    st.markdown("### 👥 Developer Team")
     
     # Create columns for creator profiles
     creator_cols = st.columns(3)
     
     creators = [
         {
-            "name": "Dr. Emily Rodriguez",
-            "role": "Principal Investigator",
-            "expertise": "Computational Genomics",
+            "name": "Jheno Syechlo ",
+            "role": "Data Scientist",
+            "expertise": "Machine Learning",
             "image": "🧬"
         },
         {
-            "name": "Alex Chen",
-            "role": "Data Scientist",
+            "name": "Adithama Mulia",
+            "role": "Lead Developer",
             "expertise": "Machine Learning",
             "image": "🤖"
         },
         {
-            "name": "Dr. Michael Wong",
-            "role": "Bioinformatics Specialist",
-            "expertise": "Cancer Research",
+            "name": "Vincent Kurniawan",
+            "role": "Data Scientist",
+            "expertise": "Machine Learning",
             "image": "🔬"
         }
     ]
