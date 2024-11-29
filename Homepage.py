@@ -8,26 +8,24 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced Custom CSS
-st.markdown("""
+# Enhanced Custom CSS for white font and adjusted shadow
+st.markdown(
+    """
     <style>
-    .reportview-container { 
-        background-color: #f0f8ff; 
+    body {
+        color: white; /* Set text color to white */
+        text-shadow: none; /* Remove text shadow */
     }
-    .stTitle {
-        color: white;
-        font-weight: bold;
+    h1, h2, h3, h4, h5, h6 {
+        color: white; /* Ensure all headings have white color */
     }
     .stMarkdown {
-        color: white;
-    }
-    .stInfo {
-        background-color: #e6f3ff;
-        border-left: 6px solid #00a2ff;
-        box-shadow: 0 4px 6px rgba(0,162,255,0.1);
+        color: white; /* Ensure Markdown content text is white */
     }
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
 # Main Content Sections
 def main():
@@ -64,10 +62,10 @@ def main():
 
     # Creator Section
     st.markdown("### 👥 Research Team")
-    
+
     # Create columns for creator profiles
     creator_cols = st.columns(3)
-    
+
     creators = [
         {
             "name": "Dr. Emily Rodriguez",
@@ -88,14 +86,15 @@ def main():
             "image": "🔬"
         }
     ]
-    
+
     for i, creator in enumerate(creators):
         with creator_cols[i]:
             st.markdown(f"""
-            {creator['image']} **{creator['name']}**
+            {creator['image']} {creator['name']}
 
-            **Role:** {creator['role']}  
-            **Expertise:** {creator['expertise']}
+            Role: {creator['role']}
+
+            Expertise: {creator['expertise']}
             """, unsafe_allow_html=True)
 
     # Future Work Section
