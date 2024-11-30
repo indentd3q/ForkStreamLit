@@ -25,26 +25,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS for improved styling
-st.markdown("""
-    <style>
-    .reportview-container {
-        background-color: #f0f2f6;
-    }
-    .sidebar .sidebar-content {
-        background-color: #e6e9ef;
-    }
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-        font-weight: bold;
-    }
-    .stButton>button:hover {
-        background-color: #45a049;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
 # App Title with Subheader
 st.title("🧬 Dataset Segregation by Race")
 st.subheader("Separate and Match Genetic Data Across Racial Demographics")
